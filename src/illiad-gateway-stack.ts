@@ -25,6 +25,7 @@ export default class IlliadGatewayStack extends cdk.Stack {
       SENTRY_RELEASE: `${props.sentryProject}@${props.sentryVersion}`,
       ILLIAD_URL: StringParameter.valueForStringParameter(this, `${paramStorePath}/illiad_url`),
       API_KEY: SecretValue.secretsManager(props.secretsPath, { jsonField: 'api_key' }).toString(),
+      AUTHORIZED_CLIENTS: StringParameter.valueForStringParameter(this, `${paramStorePath}/authorized_clients`),
     }
 
     const allLambda = new lambda.Function(this, 'AllFunction', {
