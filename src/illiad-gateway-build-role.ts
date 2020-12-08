@@ -174,6 +174,16 @@ export class IlliadGatewayBuildRole extends Role {
         ],
       })
     )
+
+    // Allow creating parameters (and delete in case of stack rollback)
+    this.addToPolicy(
+      new PolicyStatement({
+        resources: [
+          Fn.sub('arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/all/illiad-gateway/*'),
+        ],
+        actions: ['ssm:PutParameter', 'ssm:DeleteParameter', 'ssm:AddTagsToResource', 'ssm:RemoveTagsFromResource'],
+      }),
+    )
   }
 }
 
