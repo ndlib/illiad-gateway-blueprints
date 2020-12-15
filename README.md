@@ -11,5 +11,5 @@ Infrastructure-as-code for the Hesburgh Libraries [illiad-gateway service](https
 
 ## Deployment
 ```
-cdk deploy illiad-gateway-pipeline
+cdk deploy illiad-gateway-pipeline -c slackNotifyStackName=slack-approval-bot-wse-notifier
 ```
