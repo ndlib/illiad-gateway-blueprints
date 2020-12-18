@@ -138,5 +138,35 @@ export default class IlliadGatewayStack extends cdk.Stack {
       })
       newResource.addMethod('GET', new apigateway.LambdaIntegration(endpoint.lambda))
     })
+
+    // Mock endpoint for automated testing
+    const testResource = api.root.addResource('test')
+    const mockIntegrationOptions = {
+      integrationResponses: [
+        {
+          statusCode: '200',
+        },
+      ],
+      requestTemplates: {
+        "application/json": `{ "statusCode": 200 }`
+      }
+    }
+    testResource.addMethod('GET', new apigateway.MockIntegration(mockIntegrationOptions), {
+      methodResponses: [
+        {
+          statusCode: '200',
+          responseModels: {
+            "application/json": new apigateway.EmptyModel(),
+          },
+        },
+      ],
+    })
+
+    // Output API url to ssm so we can import it in the QA project
+    new StringParameter(this, 'ApiUrlParameter', {
+      parameterName: `${paramStorePath}/api-url`,
+      description: 'Path to root of the API gateway.',
+      stringValue: api.url,
+    })
   }
 }
