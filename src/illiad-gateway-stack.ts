@@ -108,7 +108,7 @@ export default class IlliadGatewayStack extends cdk.Stack {
       validateRequestParameters: true,
     })
 
-    const defaultMethodOptions = {
+    const authMethodOptions = {
       authorizationType: apigateway.AuthorizationType.CUSTOM,
       authorizer: new apigateway.TokenAuthorizer(this, 'JwtAuthorizer', {
         handler: lambda.Function.fromFunctionArn(
@@ -133,10 +133,8 @@ export default class IlliadGatewayStack extends cdk.Stack {
       { path: 'pending', lambda: pendingLambda },
     ]
     endpointData.forEach(endpoint => {
-      const newResource = api.root.addResource(endpoint.path, {
-        defaultMethodOptions: defaultMethodOptions,
-      })
-      newResource.addMethod('GET', new apigateway.LambdaIntegration(endpoint.lambda))
+      const newResource = api.root.resourceForPath(endpoint.path)
+      newResource.addMethod('GET', new apigateway.LambdaIntegration(endpoint.lambda), authMethodOptions)
     })
 
     // Mock endpoint for automated testing
